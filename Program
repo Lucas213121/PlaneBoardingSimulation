@@ -1,11 +1,167 @@
 
 
+  runs a "behind the scene" run of the layout and presents the time under "Last Run" 
+  complies all of the "behind the scene" runs and displays average under "Avegerage Run"
+  deletes all of the seats and people
+  repeates setup
+  replace the color of the seats with the color before the end of the last run
+Update
+  before loading
+    An equations runs, deacelerating the seats as they enter onto the screen and end in their final position
+    check if seat 1,1 is past their respective y cordidate
+      if true, send every seat to is correct position
+    allow drawing
+    create hitboxes using new position 
+  if start
+    every 10 frames
+      run a "behind the scenes" program 
+      it will use the same boading groups but random line arangments
+      simulates the program using a list
+      record the amount of steps it took to finish
+    check each person in line
+      if the person is greater than 30 pixels from any other person ahead of them not seated
+        move the person's y by the speed * the play multiplier
+      if person passes the y position of their seat
+        set position to that seat
+      if at assigned seat's y position
+        check amount of seated people between person and their seat
+        change the speed of the player getting to seat based on prevous line
+      if player passes their seat's x cordinate
+        player goes to seat positon 
+        player seated = true
+      if last person is in seat
+        if every person is in their seat
+        start timer for exit
+        end the timer
+        timeSegments = timer * play speed 
+        done = true
+      if done
+        exit the program with acceleration
+        save colors of the layout for the next program
+        reset()
+  touch_began()
+    set x and y as location of touch
+    if x,y is in hixbox of seat
+      change seat color to the selected color
+    if the player clicks on of the colored groups on the right
+      change selected color
+      don't allow user to color with the same click
+    every color group
+      set opacity to 75%
+    set selected color group opacity to 100%
+    every premade list
+      if the people aren't loading and the list x,y intersects with the button's hitbox
+        if text = "back to front" 
+          color groups back to front based on the position in the seat map
+          separated in to groups depending on what the number is on the counter below the premade groups
+        if text = "random" 
+          color groups randomly depending on what the number is on the counter below the premade groups
+        if text = "Window to Aisle"
+          color groups back to front based on their x position in the seat map
+        if text = "WILMA"
+          color groups back to front based on their x and y position in the seat map
+        if text = "Steffen Abr."
+          color groups back to front based on their x and y position in the seat map
+          separated in to groups depending on what the number is on the counter below the premade groups
+    every button
+      if button's hitbox contains x,y
+        if button's name = "add" and counter is not 6
+          add one to the counter
+        if button's name = "sub" and counter is not 1
+          substact one to the counter
+        if running
+          add difference in time * speed multiplier
+          start new time
+        n = index of speed counter
+        if button's name = "fast" and n is not length of speed list -1
+          change counter speed and text to number in speed list at n+1 
+        if button's name = "slow" and n is not 0
+          change counter speed and text to number in speed list at n-1
+        if button's name = "save"
+          if not saving 
+            saving = true
+            change save slots' color to green
+          else if saving
+            change save slots' color back to blue
+            saving = false
+        test to see if their is any grey
+        if there isn't grey and button's name = "run" and not already running or moving
+          start timer
+          start running
+          every person 
+            set positon in line 
+            change color to assigned seat
+            seperate people into groups based on color
+            randonize the groups
+            combine groups into the line
+            reposition people in line based on position in line list
+           
+        if saving
+          every save slot
+            if slot's hitbox contains x,y
+              if saving  
+                change name to time
+                add all seat colors to slot's list 
+                change all the slot's colors back to blue
+                saving = false
+              else and slot's list isn't empty:
+                change the seats to the color map saved in this slot
+                
+                
+  touch_moved()
+    create x,y of when touch is located
+    if touch in hit box of seat
+      change color to selected color
+  touch_ended()
+    changing groups is false
+  premade Class()
+    create button and text
+    set position
+    set name
+    change scale
+    add hitbox
+    add them to scene
+  save Class()
+    create button and text
+    set position
+    set name to placeholder
+    change scale
+    add hitbox
+    add list to hold colors
+    add them to scene
+  group Class()
+    get color from color list
+    create button
+    set opacity to 75%
+    add hitbox
+  button Class()
+    create button with correct poportions
+    add symbol to accompany the button
+    set color based on pick 
+    set name
+  seat Class()
+    create seat sprite
+    give hitbox
+    set its position above the screen
+  person Class()
+    create sprite for person
+    assign seat to person
+    person assigned to seat
+    set postion off screen until run
+run main program
+    
+  
+        
+          
+          
+
 from scene import *
 from math import *
 from random import *
 import time as stopWatch
 import datetime
 
+#import respective classes
 
 timesHold = []
 
@@ -28,6 +184,7 @@ YELLOW = b, b, s, n
 RED    = b, s, s, n
 PINK   = b, s, b, n
 
+creates colors used thoughout program
 
 '''
 #vibrant
@@ -46,7 +203,7 @@ textBlue = '#144091'
 textGreen = '#0a9016'
 #colorListRev = colorList[::-1]
 
-
+#creates base colors
 
 
 counterGroups = LabelNode('1')
@@ -58,6 +215,8 @@ methodSelection = []
 slidingTiles = False
 slidingDown = False
 steps = []
+#creates text nodes
+
 #START = stopWatch.time()
 
 
@@ -67,7 +226,8 @@ class Game (Scene):
 	def setup(self):	
 		
 		
-		
+		creates buttons (premade, colors, counters, save, load, run)  
+  
 		self.preMade('Back to Front')
 		self.preMade('Random')
 		self.preMade('Window to Aisle')
@@ -82,7 +242,7 @@ class Game (Scene):
 		
 		
 		
-		
+		#create counter
 		self.button(50,preMadeList[0].position.y-60,'add','#a5ff92',textGreen,'iow:plus_round_32')
 	
 		#counter = LabelNode('1')
@@ -120,7 +280,7 @@ class Game (Scene):
 		
 		
 		self.button(self.size.w-50,self.size.h-680,'run','#76a6ff',textBlue,'iow:play_32')
-		
+		#creates text for times
 		avgTxt.position = (self.size.w-50,preMadeList[0].position.y-340)
 		avgTxt.scale = 0.5
 		avgTxt.color = textBlue
@@ -161,7 +321,10 @@ class Game (Scene):
 			person = self.person(i)
 			self.line[i] = person
 			person.gotoPos = place.gotoPos 
-		
+		#creates map of seats with with no colors
+		#creates line of people 
+
+
 		self.everyOther = 0
 		
 		self.end = False
@@ -181,7 +344,7 @@ class Game (Scene):
 		
 		
 		
-		
+		# runs faster behind the scenes simulation using the same line of people
 		segregated = [[],[],[],[],[],[]]
 		for seat in self.line:
 			person = [int(self.seatMap.index(seat.assigned)/6+1),self.seatMap.index(seat.assigned)%6+1]
@@ -274,6 +437,7 @@ class Game (Scene):
 			times.append(run)
 		
 		diff = stopWatch.time() - now
+		#displays time in seconds from program and averages of behind the scene runs during the program
 		avgTxt.text = 'Average Run\n{num:.3f} sec'.format(num = ((sum(steps)/len(steps)-100)/1.55))
 		runTxt.text = 'Last Run\n{num:.3f} sec'.format(num = ((times[0]-100)/1.55))
 		runTxt.position = (self.size.w-55,preMadeList[0].position.y-390)
@@ -282,12 +446,13 @@ class Game (Scene):
 		
 		
 		
-
+		#delete all seats and people
 		for item in self.line:
 			item.remove_from_parent()
 		for item in self.seatMap:
 			item.remove_from_parent()
-			
+	
+		#resets everything
 		self.run = False
 		self.saving = False
 		
@@ -309,7 +474,7 @@ class Game (Scene):
 			self.seatMap[i] = place
 			place.position = place.position.x,place.position.y-place.loc%6
 			
-			
+			#set color using seating colors prior to end
 			place.color = self.previousLayout[i]
 			
 			person = self.person(i)
@@ -329,7 +494,7 @@ class Game (Scene):
 		
 					
 	def update(self):
-		
+		#plane enters onto screen
 		if self.enter:
 			if not self.moving:
 				self.studderB = stopWatch.time()
@@ -341,6 +506,7 @@ class Game (Scene):
 					item.position = item.position.x,item.position.y-acc
 			item = self.seatMap[0]
 			if item.position.y < item.gotoPos.y:
+				#stops "plane" and establishes hit boxes
 				self.enter = False 
 				for item in self.seatMap:
 					item.position = item.gotoPos
@@ -354,9 +520,13 @@ class Game (Scene):
 						
 					
 			
-			
+		#starts when person clicks "run" button
+		
 		if not self.enter and self.run:
+			
 			self.everyOther += 1
+			#every 10 frames the program will run a quicker version to test a different line on the same layout
+			#this data is used in reset
 			if self.everyOther == 10:
 				self.everyOther = 0
 				num = 1234
@@ -465,8 +635,8 @@ class Game (Scene):
 								test = False
 						done = test
 					steps.append(run)
-					
-
+		
+			#people move forward unless someone is in front of them and less than a certain distance away
 			for i in range(len(self.line)):
 				k = self.line[i]
 				dis=True
@@ -479,11 +649,12 @@ class Game (Scene):
 				dis = (minDis > 30)
 				
 				multiplier =float(counterSpeed.text)
+				#speeds for in aisle, in seats, and a subtractor for every filled seat between the person and their seat
 				spe = 4 * multiplier
 				n = 0.25 * multiplier
 				speSeat = 1 * multiplier
 				
-				
+				#if not past seat, keep moving
 				if not k.inSeat and not k.paused:
 					if dis or i == 0:
 						k.position=(k.position.x,k.position.y+spe)
@@ -492,24 +663,25 @@ class Game (Scene):
 					pick = k.assigned
 					
 					
-					
+					# set speed while sitting
 					if (pick.position.x < self.size.w/2):
 						for l in self.seatMap:
 							if l.position.y == pick.position.y and l.position.x > pick.position.x and l.position.x < self.size.w/2:
 								if l.assigned.inSeat:
 									speSeat-=n
-								
+				        
 					if (pick.position.x > self.size.w/2):
 						for l in self.seatMap:
 							if l.position.y == pick.position.y and l.position.x < pick.position.x and l.position.x > self.size.w/2:
 								if l.assigned.inSeat:
 									speSeat-=n
 					
-							
+					#move towards person's seat		
 					if (k.gotoPos[0] < self.size.w/2):
 						k.position=(k.position.x-speSeat,k.position.y)
 					else:
 						k.position=(k.position.x+speSeat,k.position.y)
+				#if person is past seat, set position to seat
 				if (k.position.y >= k.gotoPos.y) and not k.paused and not k.inSeat:
 					
 					
@@ -519,12 +691,12 @@ class Game (Scene):
 					k.position = (k.position.x,k.gotoPos[1])
 				
 				
-				
+				#if position is same as assigned seat, player is seated
 				if abs(k.position.x - (self.size.w/2)) > 30:
 					k.inSeat = True
 					
 				
-	
+				#continue the res of the way to persons seat, doesn't interfere with aisle anymore
 				if k.inSeat and not self.done:
 					pick = k.assigned
 					
@@ -542,7 +714,7 @@ class Game (Scene):
 								if l.assigned.inSeat:
 									speSeat-=n
 					
-							
+					#if passed seat's x position, set cords to the same as seat		
 					if (k.gotoPos[0] < self.size.w/2):
 						
 						k.position=(k.position.x-speSeat,k.position.y)
@@ -558,7 +730,8 @@ class Game (Scene):
 				
 					
 
-		
+		#if last person is in their seat, check if everyone is in their seat
+		#if true, stop timer, plane exits
 		if self.line[0] != ' ' and self.line[-1].inSeat:
 			test = True
 			for i in self.line:
@@ -597,7 +770,7 @@ class Game (Scene):
 		if t:
 			
 			self.previousLayout = []
-			
+			#record seats color and reset
 			for seat in self.seatMap:
 					self.previousLayout.append(seat.color)		
 			
@@ -619,16 +792,18 @@ class Game (Scene):
 	def touch_began(self,touch):
 		x=touch.location.x
 		y=touch.location.y
+		#person is clicked, change color to selected color group's color
 		for i in self.seatMap:
 			if i.rectangle.contains_point((x,y)) and not self.enter and not self.run:
 				i.color = self.selectedGroup.color
 		self.changingGroups = True
+		#group button is selected, change selected color
 		for i in groupList:
 			if i.rectangle.contains_point((x,y)):
 				self.selectedGroup = i
 				self.changingGroups = False
 				
-				
+		#change all color groups to lighter except selected one
 		if not self.changingGroups:
 			for i in groupList:
 				i.alpha = 0.7
@@ -637,8 +812,8 @@ class Game (Scene):
 		
 		
 				
-				
-				
+		#if premade layout is selected change layout based on it and the counter's number
+		#each name describes the method
 		for i in preMadeList:
 			if i.rectangle.contains_point((x,y)) and not self.run:
 				text = i.name
@@ -696,24 +871,27 @@ class Game (Scene):
 						count = int(counterGroups.text)
 						place.color = colorList[( (row%(int((count+1)/2)))*2+int(seat/3) )]
 		
+		#if button is click, run action from it
 		for i in buttons:
 			if i.rectangle.contains_point((x,y)):  
 				n = int(counterGroups.text)
+				#add and subtract from counter
 				if i.name == 'add' and n < 6 and not self.run:
 					counterGroups.text = str(n+1)
 				if i.name == 'sub' and n > 1 and not self.run:
 					counterGroups.text = str(n-1)
 					
 				n = speedList.index(float(counterSpeed.text))
-				
+				#add time to list 
 				if self.run:
 					self.timeSegments.append((stopWatch.time()-self.START) * float(counterSpeed.text))
 					self.START = stopWatch.time()
+				#add and subtract from speed
 				if i.name == 'fast' and n < len(speedList)-1:
 					counterSpeed.text = str(speedList[n+1])
 				if i.name == 'slow' and n > 0:
 					counterSpeed.text = str(speedList[n-1])
-					
+				#start or end saving process
 				if i.name == 'save' and not self.run:	
 					if self.saving:
 						self.saving = False
@@ -728,10 +906,13 @@ class Game (Scene):
 							#selected color
 							j.color = '#a4ffdb'
 							j.text.color = textGreen
+				#check if any grey seats
 				grey = False
 				for j in self.seatMap:
 					if not (j.color in colorList):
 						grey = True
+				#starts the program, disables other buttons except for speed counter
+				#randomizes people within groups and reassignes their position in the line
 				if i.name == 'run' and not self.enter and not self.run and not grey:	
 					
 						
@@ -760,7 +941,7 @@ class Game (Scene):
 					
 					
 						#j.assigned.position = j.gotoPos[0], j.gotoPos[1]+836
-						
+		#saving and loading layouts				
 		for i in newMadeList:
 			if i.rectangle.contains_point((x,y)): 
 				if self.saving and not self.run:
@@ -778,7 +959,7 @@ class Game (Scene):
 					for j in range(len(self.seatMap)):
 						self.seatMap[j].color = i.save[j]
 	def touch_moved(self,touch):
-	
+		# if person drag their finger, they can color in multiple seats at once
 		x=touch.location.x
 		y=touch.location.y
 		for i in self.seatMap:
@@ -791,8 +972,9 @@ class Game (Scene):
 
 	def touch_ended(self,touch):
 		self.changingGroups = False
+		#ends changing seats colors for now
 	def preMade(self, name):
-		
+		#creates buttons for premade layout
 		split = 50
 		place=SpriteNode('pzl:Button1')
 		if slidingDown:
@@ -819,6 +1001,8 @@ class Game (Scene):
 		place.name = name
 		self.add_child(text)
 	def newMade(self, name):
+
+		#creates buttons for saving and loading layout
 		split = 50
 		place=SpriteNode('pzl:Button1')
 		
@@ -849,6 +1033,8 @@ class Game (Scene):
 		
 								
 	def group(self):
+	
+		#creates the color groups on the top right
 		split = 50
 		place=SpriteNode('pzl:Gray3')
 		if slidingDown:
@@ -865,6 +1051,8 @@ class Game (Scene):
 		return(place)
 		
 	def button(self, x, y, name, colorTile, colorSymb, symbol):
+	
+		#creates button and symbols
 		tile = SpriteNode('pzl:Button1',(x,y))
 		symb = SpriteNode(symbol,(x,y))
 		tile.scale = 1
@@ -881,7 +1069,7 @@ class Game (Scene):
 		symb.color = colorSymb
 		self.add_child(symb)	
 	def seat(self,seat):
-		
+		#creates seats and positions them off screen
 		
 		place=SpriteNode('pzl:Gray3')
 		place.type = 'seat'
@@ -911,6 +1099,7 @@ class Game (Scene):
 		
 		return(place)
 	def person(self,seat):
+		#creates people and positions them off screen
 		person=SpriteNode('pzl:BallGray')
 		person.type = 'person'
 		person.z_position = 4
