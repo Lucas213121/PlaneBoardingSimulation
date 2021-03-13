@@ -76,3 +76,92 @@ Update
           separated in to groups depending on what the number is on the counter below the premade groups
     every button
       if button's hitbox contains x,y
+        if button's name = "add" and counter is not 6
+          add one to the counter
+        if button's name = "sub" and counter is not 1
+          substact one to the counter
+        if running
+          add difference in time * speed multiplier
+          start new time
+        n = index of speed counter
+        if button's name = "fast" and n is not length of speed list -1
+          change counter speed and text to number in speed list at n+1 
+        if button's name = "slow" and n is not 0
+          change counter speed and text to number in speed list at n-1
+        if button's name = "save"
+          if not saving 
+            saving = true
+            change save slots' color to green
+          else if saving
+            change save slots' color back to blue
+            saving = false
+        test to see if their is any grey
+        if there isn't grey and button's name = "run" and not already running or moving
+          start timer
+          start running
+          every person 
+            set positon in line 
+            change color to assigned seat
+            seperate people into groups based on color
+            randonize the groups
+            combine groups into the line
+            reposition people in line based on position in line list
+           
+        if saving
+          every save slot
+            if slot's hitbox contains x,y
+              if saving  
+                change name to time
+                add all seat colors to slot's list 
+                change all the slot's colors back to blue
+                saving = false
+              else and slot's list isn't empty:
+                change the seats to the color map saved in this slot
+                
+                
+  touch_moved()
+    create x,y of when touch is located
+    if touch in hit box of seat
+      change color to selected color
+  touch_ended()
+    changing groups is false
+  premade Class()
+    create button and text
+    set position
+    set name
+    change scale
+    add hitbox
+    add them to scene
+  save Class()
+    create button and text
+    set position
+    set name to placeholder
+    change scale
+    add hitbox
+    add list to hold colors
+    add them to scene
+  group Class()
+    get color from color list
+    create button
+    set opacity to 75%
+    add hitbox
+  button Class()
+    create button with correct poportions
+    add symbol to accompany the button
+    set color based on pick 
+    set name
+  seat Class()
+    create seat sprite
+    give hitbox
+    set its position above the screen
+  person Class()
+    create sprite for person
+    assign seat to person
+    person assigned to seat
+    set postion off screen until run
+run main program
+    
+  
+        
+          
+          
