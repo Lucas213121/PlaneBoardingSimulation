@@ -27,7 +27,7 @@ YELLOW = b, b, s, n
 RED    = b, s, s, n
 PINK   = b, s, b, n
 
-creates colors used thoughout program
+#creates colors used thoughout program
 
 '''
 #vibrant
@@ -69,7 +69,7 @@ class Game (Scene):
 	def setup(self):	
 		
 		
-		creates buttons (premade, colors, counters, save, load, run)  
+		#creates buttons (premade, colors, counters, save, load, run)  
   
 		self.preMade('Back to Front')
 		self.preMade('Random')
