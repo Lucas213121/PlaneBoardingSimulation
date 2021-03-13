@@ -1,8 +1,8 @@
-# PlaneBoardingSimulation
-This program will only run in the Pythonista App on the IPhone since it uses the Scene method.
-On the top left are premade layouts.
-Middle left contains a counter which changes some of the layouts.
-The bottem left contains a save and load feature.
-Top right contains the groups the user can draw.
-Middle right contains the speed for when the program is running.
-Bottem right contains the time and average of the last run and a the button used to run the program.
+#Plane Boarding Simulation
+This program will only run in the Pythonista App on the IPhone since it uses the Scene method.  
+On the top left are pre-made boarding group layouts.
+Middle left contains a counter which changes the number of boarding groups in the layouts. 
+The bottom left contains a save and load feature for created layouts.
+Top right contains the boarding groups so the user can create their own layout. 
+Middle right contains the speed at which the program runs. 
+Bottom right shows the average run time, the last run time, and the run button. 
