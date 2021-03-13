@@ -15,6 +15,7 @@ Reset
   complies all of the "behind the scene" runs and displays average under "Avegerage Run"
   deletes all of the seats and people
   repeates setup
+  replace the color of the seats with the color before the end of the last run
 Update
   before loading
     An equations runs, deacelerating the seats as they enter onto the screen and end in their final position
@@ -39,6 +40,39 @@ Update
       if player passes their seat's x cordinate
         player goes to seat positon 
         player seated = true
-      if 
-        
-  
+      if last person is in seat
+        if every person is in their seat
+        start timer for exit
+        end the timer
+        timeSegments = timer * play speed 
+        done = true
+      if done
+        exit the program with acceleration
+        save colors of the layout for the next program
+        reset()
+  touch_began()
+    set x and y as location of touch
+    if x,y is in hixbox of seat
+      change seat color to the selected color
+    if the player clicks on of the colored groups on the right
+      change selected color
+      don't allow user to color with the same click
+    every color group
+      set opacity to 75%
+    set selected color group opacity to 100%
+    every premade list
+      if the people aren't loading and the list x,y intersects with the button's hitbox
+        if text = "back to front" 
+          color groups back to front based on the position in the seat map
+          separated in to groups depending on what the number is on the counter below the premade groups
+        if text = "random" 
+          color groups randomly depending on what the number is on the counter below the premade groups
+        if text = "Window to Aisle"
+          color groups back to front based on their x position in the seat map
+        if text = "WILMA"
+          color groups back to front based on their x and y position in the seat map
+        if text = "Steffen Abr."
+          color groups back to front based on their x and y position in the seat map
+          separated in to groups depending on what the number is on the counter below the premade groups
+    every button
+      if button's hitbox contains x,y
