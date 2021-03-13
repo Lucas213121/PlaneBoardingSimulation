@@ -1,4 +1,5 @@
 
+
 from scene import *
 from math import *
 from random import *
@@ -660,8 +661,9 @@ class Game (Scene):
 						
 				if text == 'Random':
 					for place in self.seatMap:
-						
-						place.color = colorList[randint(0,len(colorList)-1)]
+						count = int(counterGroups.text)
+						num = len(colorList)-(7-count)
+						place.color = colorList[randint(0,num)]
 									
 				if text == 'Window to Aisle':			
 					for place in self.seatMap:
@@ -780,7 +782,7 @@ class Game (Scene):
 					for j in range(len(self.seatMap)):
 						self.seatMap[j].color = i.save[j]
 	def touch_moved(self,touch):
-	#	if not self.changingGroups:
+	
 		x=touch.location.x
 		y=touch.location.y
 		for i in self.seatMap:
@@ -789,7 +791,7 @@ class Game (Scene):
 				
 				i.color = self.selectedGroup.color
 			
-	#def touch_ended(self,touch)	
+
 
 	def touch_ended(self,touch):
 		self.changingGroups = False
@@ -895,16 +897,10 @@ class Game (Scene):
 		place.rectangle = Rect(place.position.x - w,place.position.y - w,2*w,2*w)
 		
 		self.add_child(place)
-		#if row % 5 == 0:
-		#	tile.color='red'
+		
 		
 		n=5
-		'''
-		if self.SYSTEM == 'Ste':		
-			print('Ok')
-			place.color = (randint(0,n)/n, randint(0,n)/n, randint(0,n)/n)
-			print(place.color)
-		'''
+		
 		
 		rowSpace = 30
 		seatSpace = 30
@@ -927,22 +923,6 @@ class Game (Scene):
 		person.paused = False
 		person.time = stopWatch.time()+1000
 		self.add_child(person)
-		#if row % 5 == 0:
-		#	tile.color='red'
-		
-		#colorList=[(1.0,0.0,0.0,1.0),(1.0,0.65,0.0,1.0),(1.0,1.0,0.0,1.0),(0.0,0.5,0.0,1.0),(0.0,0.0,1.0,1.0),(0.5,0.0,0.5,1.0),(1.0,0.75,0.8,1.0)]
-		#person.color=choice(colorList)
-		
-		'''
-		if self.SYSTEM != 'R':
-			n = len(self.seatMap)/18
-			if 0 <= row and n > row:
-				person.color='#9ba4ff'
-			if n <= row and 2*n > row:
-				person.color='#9bffa4'
-			if 2*n <= row and 3*n > row:
-				person.color='#ff9b9b'
-		'''
 		
 		
 		self.seatMap[seat].assigned = person
@@ -953,13 +933,6 @@ class Game (Scene):
 			
 		person.assigned.assigned = person		
 		person.position = -30,-30	
-		#person.gotoPos = [self.seatMap[seat].position.x,self.seatMap[seat].position.y]
-		
-		
-		
-		
-		
-		#person.position=(self.size.w/2,-(seat)*rowSpace-400)
 		
 		
 		return(person)
