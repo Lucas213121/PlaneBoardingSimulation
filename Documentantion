@@ -1,0 +1,10 @@
+this program loads in a proves its users with and empty slate for a seating map of a plane
+the user may click each of the individual coloring groups and click and hold to color the seats
+the user can save their disign by clicking the yellow button and clicking the buttons that changed to green
+if clicked, the save slots will store the color map of the seats and change the text to the time of the save
+users can click the save files when they are blue to load the change
+the saved loads will not work if you rerun the program
+the user can use the premade option on the top left and some of them (back to front, random, and steffen abr) can be changed by the counter below them
+the user can run the program by clicking the blue button, but they wont be able to change the colors of the seats during this time
+the user may only change the speed while the people are boarding
+after the plane leaves, the times will be displayed for the run presented and for an average of runs using the same boarding groups
