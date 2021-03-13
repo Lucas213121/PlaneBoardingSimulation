@@ -4,4 +4,41 @@ creates colors used thoughout program
 creates text nodes
 
 Setup
+  creates buttons (premade, colors, counters, save, load, run)  
+  creates map of seats with with no colors
+  creates line of people 
+  assignes people to seat and seat to people
+  places all of the seats in their respective places of screen
+  start = false
+Reset
+  runs a "behind the scene" run of the layout and presents the time under "Last Run" 
+  complies all of the "behind the scene" runs and displays average under "Avegerage Run"
+  deletes all of the seats and people
+  repeates setup
+Update
+  before loading
+    An equations runs, deacelerating the seats as they enter onto the screen and end in their final position
+    check if seat 1,1 is past their respective y cordidate
+      if true, send every seat to is correct position
+    allow drawing
+    create hitboxes using new position 
+  if start
+    every 10 frames
+      run a "behind the scenes" program 
+      it will use the same boading groups but random line arangments
+      simulates the program using a list
+      record the amount of steps it took to finish
+    check each person in line
+      if the person is greater than 30 pixels from any other person ahead of them not seated
+        move the person's y by the speed * the play multiplier
+      if person passes the y position of their seat
+        set position to that seat
+      if at assigned seat's y position
+        check amount of seated people between person and their seat
+        change the speed of the player getting to seat based on prevous line
+      if player passes their seat's x cordinate
+        player goes to seat positon 
+        player seated = true
+      if 
+        
   
