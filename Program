@@ -1,0 +1,967 @@
+
+from scene import *
+from math import *
+from random import *
+import time as stopWatch
+import datetime
+
+
+timesHold = []
+
+preMadeList = []
+newMadeList = []
+groupList = []
+
+TRANSITION = True
+
+#user defined algarithim - user picks order calculate aberage amount of time
+#visualize algarithim run it one time visualt and 100 times it behind the pictures - deplay information
+#iphone emulator
+#
+
+
+#dull
+n = 1.0
+s = 0.65
+b = 1.0
+BLUE   = s, s, b, n
+AQUA   = s, b, b, n
+GREEN  = s, b, s, n
+YELLOW = b, b, s, n
+RED    = b, s, s, n
+PINK   = b, s, b, n
+
+
+'''
+#vibrant
+BLUE   = 0.25, 0.31, 1.0, 1.0
+AQUA   = 0.43, 1.0, 0.93, 1.0
+GREEN  = 0.39, 1.0, 0.45, 1.0
+YELLOW = 0.97, 1.0, 0.36, 1.0
+RED    = 1.0, 0.39, 0.39, 1.0
+PINK   = 1.0, 0.36, 0.86, 1.0
+'''
+colorList = [BLUE,AQUA,GREEN,YELLOW,RED,PINK]
+
+speedList = [0.5,0.75,1,2,4,6]
+
+textBlue = '#144091'
+textGreen = '#0a9016'
+#colorListRev = colorList[::-1]
+
+
+
+
+counterGroups = LabelNode('1')
+counterSpeed = LabelNode('1')
+avgTxt = LabelNode('Average Run\n0 sec')
+runTxt = LabelNode('Last Run\n0 sec')
+buttons = []
+methodSelection = []
+slidingTiles = False
+slidingDown = False
+steps = []
+#START = stopWatch.time()
+
+
+previousLayout = []
+
+class Game (Scene):
+	def setup(self):	
+		
+		
+		
+		self.preMade('Back to Front')
+		self.preMade('Random')
+		self.preMade('Window to Aisle')
+		self.preMade('Steffen Abr.')
+		self.preMade('WILMA')
+		
+		#self.preMade('Pyramid')
+		self.selectedGroup = self.group()	
+		self.selectedGroup.alpha = 1
+		for i in range(5):
+			self.group()
+		
+		
+		
+		
+		self.button(50,preMadeList[0].position.y-60,'add','#a5ff92',textGreen,'iow:plus_round_32')
+	
+		#counter = LabelNode('1')
+		
+		counterGroups.position = (50,preMadeList[0].position.y-110)
+		counterGroups.scale = 0.7
+		counterGroups.color = textBlue
+		counterGroups.font = ('DIN Condensed',40)
+		self.add_child(counterGroups)
+		
+		self.button(50,preMadeList[0].position.y-150,'sub','#ffbca4','#a90000','iow:minus_round_32')
+		
+		self.button(50,preMadeList[0].position.y-210,'save','#ffedad','#838643','iow:ios7_copy_32')
+		
+		
+		self.newMade('[empty]')
+		self.newMade('[empty]')
+		self.newMade('[empty]')
+		self.newMade('[empty]')
+		self.newMade('[empty]')
+		self.saving = False
+		
+		
+		self.button(self.size.w-50,preMadeList[0].position.y-190,'fast','#a5ff92',textGreen,'iow:ios7_fastforward_32')
+	
+		#counter = LabelNode('1')
+		
+		counterSpeed.position = (self.size.w-50,preMadeList[0].position.y-240)
+		counterSpeed.scale = 0.7
+		counterSpeed.color = textBlue
+		counterSpeed.font = ('DIN Condensed',40)
+		self.add_child(counterSpeed)
+		
+		self.button(self.size.w-50,preMadeList[0].position.y-280,'slow','#ffbca4','#a90000','iow:ios7_rewind_32')
+		
+		
+		self.button(self.size.w-50,self.size.h-680,'run','#76a6ff',textBlue,'iow:play_32')
+		
+		avgTxt.position = (self.size.w-50,preMadeList[0].position.y-340)
+		avgTxt.scale = 0.5
+		avgTxt.color = textBlue
+		avgTxt.font = ('DIN Condensed',40)
+		self.add_child(avgTxt)
+		
+		runTxt.position = (self.size.w-63,preMadeList[0].position.y-390)
+		runTxt.scale = 0.5
+		runTxt.color = textBlue
+		runTxt.font = ('DIN Condensed',40)
+		self.add_child(runTxt)
+		
+		
+		self.run = False
+		
+		
+		
+		self.background_color='#f6fbff'
+		
+		
+		self.timeSegments = []
+		
+		self.previousLayout = []
+		self.studder = stopWatch.time()+10000
+		self.line = []
+		
+		self.seatMap = []
+		for i in range(24*6):
+			self.seatMap.append(' ')
+			self.line.append(' ')
+		
+		
+		for i in range(len(self.seatMap)):
+			place = self.seat(i)
+			self.seatMap[i] = place
+			place.position = place.position.x,place.position.y-place.loc%6
+			
+			person = self.person(i)
+			self.line[i] = person
+			person.gotoPos = place.gotoPos 
+		
+		self.everyOther = 0
+		
+		self.end = False
+		self.done = False
+		self.enter = True
+		self.moving = False
+		
+		self.START = stopWatch.time()
+	def reset(self):	
+		
+		times = []
+		num = 1234
+		rows = 24
+		cols = 6
+		now = stopWatch.time()
+		n = 20
+		
+		
+		
+		
+		segregated = [[],[],[],[],[],[]]
+		for seat in self.line:
+			person = [int(self.seatMap.index(seat.assigned)/6+1),self.seatMap.index(seat.assigned)%6+1]
+			r = colorList.index(seat.assigned.color)
+			
+			segregated[r].append(person)
+		
+		temp=[]
+		
+		
+		
+			
+			
+		
+			
+		
+		walking = []
+		sitting = []
+		
+		for p in self.line:
+			person = [int(self.seatMap.index(p.assigned)/6+1),self.seatMap.index(p.assigned)%6+1]
+			walking.append(person)
+		walking = walking[::-1]
+		
+		for i in range(rows):
+			sitting.append([0,0,0,0,0,0])
+		for i in sitting:
+			walking.append(0)
+		
+		permS = sitting		
+		permW = walking
+		
+		segregated = segregated [::-1]
+				
+		
+		for p in range(n):
+			walking = permW
+			sitting = permS
+			
+			line = []
+		
+			
+				
+			
+			
+			
+			run = 0
+			done = False
+			while not done:
+				run += 1
+		
+				
+				
+				
+		
+				for i in range(len(walking)-1,-1,-1):
+					
+					
+					if type(walking[i]) == type([]):
+						if walking[i] != 0 and walking[i][0]-1 == i-(cols*rows):
+							
+							m = walking[i][1]
+							
+							if i-(cols*rows) >= 0:
+								sitting[i-(cols*rows)][m-1] = walking[i]
+								num = 1
+								
+								if m-1 > 2:
+									for l in range(3,m-1):
+										if sitting[i-(cols*rows)][l] != 0:
+											num += 1
+									
+								else:
+									for l in range(m-1):
+										if sitting[i-(cols*rows)][l] != 0:
+											num += 1
+								walking[i] = num
+								
+							
+						elif i+1 < len(walking) and walking[i+1] == 0:
+							walking[i+1] = walking[i]
+							walking[i] = 0
+					if type(walking[i]) == type(1) and walking[i]!=0:
+						walking[i] -= 1
+				test = True
+				for l in walking:
+					if l != 0:
+						test = False
+				done = test
+			times.append(run)
+		
+		diff = stopWatch.time() - now
+		avgTxt.text = 'Average Run\n{num:.3f} sec'.format(num = ((sum(steps)/len(steps)-100)/1.55))
+		runTxt.text = 'Last Run\n{num:.3f} sec'.format(num = ((times[0]-100)/1.55))
+		runTxt.position = (self.size.w-55,preMadeList[0].position.y-390)
+
+		
+		
+		
+		
+
+		for item in self.line:
+			item.remove_from_parent()
+		for item in self.seatMap:
+			item.remove_from_parent()
+			
+		self.run = False
+		self.saving = False
+		
+		
+		self.timeSegments = []
+		
+		
+		self.studder = stopWatch.time()+10000
+		self.line = []
+		
+		self.seatMap = []
+		for i in range(24*6):
+			self.seatMap.append(' ')
+			self.line.append(' ')
+		
+		
+		for i in range(len(self.seatMap)):
+			place = self.seat(i)
+			self.seatMap[i] = place
+			place.position = place.position.x,place.position.y-place.loc%6
+			
+			
+			place.color = self.previousLayout[i]
+			
+			person = self.person(i)
+			self.line[i] = person
+			person.gotoPos = place.gotoPos 
+		
+		
+		
+		self.end = False
+		self.done = False
+		self.enter = True
+		self.moving = False
+		
+		
+		
+		
+		
+					
+	def update(self):
+		
+		if self.enter:
+			if not self.moving:
+				self.studderB = stopWatch.time()
+				self.moving = True
+			if self.moving:
+				acc = (((self.studderB)-stopWatch.time()+4)**2)/1.5
+				
+				for item in self.seatMap:
+					item.position = item.position.x,item.position.y-acc
+			item = self.seatMap[0]
+			if item.position.y < item.gotoPos.y:
+				self.enter = False 
+				for item in self.seatMap:
+					item.position = item.gotoPos
+				self.START = stopWatch.time()
+				
+				w = 15
+				for place in self.seatMap:
+						
+					place.rectangle = Rect(place.position.x-w,place.position.y-w,2*w,2*w)
+						
+						
+					
+			
+			
+		if not self.enter and self.run:
+			self.everyOther += 1
+			if self.everyOther == 10:
+				self.everyOther = 0
+				num = 1234
+				rows = 24
+				cols = 6
+				now = stopWatch.time()
+				n = 1
+				
+				
+				
+				
+				segregated = [[],[],[],[],[],[]]
+				for seat in self.line:
+					person = [int(self.seatMap.index(seat.assigned)/6+1),self.seatMap.index(seat.assigned)%6+1]
+					r = colorList.index(seat.assigned.color)
+					
+					segregated[r].append(person)
+				
+				temp=[]
+				
+				
+					
+				for l in segregated:
+					
+					shuffle(l)
+								
+				
+				
+				walking = []
+				sitting = []
+				
+				for p in self.line:
+					person = [int(self.seatMap.index(p.assigned)/6+1),self.seatMap.index(p.assigned)%6+1]
+					walking.append(person)
+				walking = []
+				for k in segregated:
+					
+					if not(k == []):
+						for j in k:
+							walking.append(j)
+				walking = walking[::-1]
+				
+				for i in range(rows):
+					sitting.append([0,0,0,0,0,0])
+				for i in sitting:
+					walking.append(0)
+				
+				permS = sitting		
+				permW = walking
+				
+				segregated = segregated [::-1]
+				
+				
+				for p in range(n):
+					
+					walking = permW
+					sitting = permS
+					
+					line = []
+					
+					
+					
+					
+					run = 0
+					done = False
+					while not done:
+						run += 1
+				
+						
+						
+						
+				
+						for i in range(len(walking)-1,-1,-1):
+							
+							
+							if type(walking[i]) == type([]):
+								if walking[i] != 0 and walking[i][0]-1 == i-(cols*rows):
+											
+									m = walking[i][1]
+									
+									if i-(cols*rows) >= 0:
+										sitting[i-(cols*rows)][m-1] = walking[i]
+										num = 1
+										
+										if m-1 > 2:
+											for l in range(3,m-1):
+												if sitting[i-(cols*rows)][l] != 0:
+													num += 1
+											
+										else:
+											for l in range(m-1):
+												if sitting[i-(cols*rows)][l] != 0:
+													num += 1
+											
+										walking[i] = num
+										
+									
+								elif i+1 < len(walking) and walking[i+1] == 0:
+									walking[i+1] = walking[i]
+									walking[i] = 0
+							if type(walking[i]) == type(1) and walking[i]!=0:
+								walking[i] -= 1
+						test = True
+						for l in walking:
+							if l != 0:
+								test = False
+						done = test
+					steps.append(run)
+					
+
+			for i in range(len(self.line)):
+				k = self.line[i]
+				dis=True
+				minDis=1000
+				for l in range(i):
+					j = self.line[l]
+					temp = abs(k.position.y - j.position.y)
+					if temp < minDis and j != k and not j.inSeat:
+						minDis=temp
+				dis = (minDis > 30)
+				
+				multiplier =float(counterSpeed.text)
+				spe = 4 * multiplier
+				n = 0.25 * multiplier
+				speSeat = 1 * multiplier
+				
+				
+				if not k.inSeat and not k.paused:
+					if dis or i == 0:
+						k.position=(k.position.x,k.position.y+spe)
+						
+				if k.paused and not k.inSeat:
+					pick = k.assigned
+					
+					
+					
+					if (pick.position.x < self.size.w/2):
+						for l in self.seatMap:
+							if l.position.y == pick.position.y and l.position.x > pick.position.x and l.position.x < self.size.w/2:
+								if l.assigned.inSeat:
+									speSeat-=n
+								
+					if (pick.position.x > self.size.w/2):
+						for l in self.seatMap:
+							if l.position.y == pick.position.y and l.position.x < pick.position.x and l.position.x > self.size.w/2:
+								if l.assigned.inSeat:
+									speSeat-=n
+					
+							
+					if (k.gotoPos[0] < self.size.w/2):
+						k.position=(k.position.x-speSeat,k.position.y)
+					else:
+						k.position=(k.position.x+speSeat,k.position.y)
+				if (k.position.y >= k.gotoPos.y) and not k.paused and not k.inSeat:
+					
+					
+					
+					k.paused = True
+					
+					k.position = (k.position.x,k.gotoPos[1])
+				
+				
+				
+				if abs(k.position.x - (self.size.w/2)) > 30:
+					k.inSeat = True
+					
+				
+	
+				if k.inSeat and not self.done:
+					pick = k.assigned
+					
+					
+					
+					if (pick.position.x < self.size.w/2):
+						for l in self.seatMap:
+							if l.position.y == pick.position.y and l.position.x > pick.position.x and l.position.x < self.size.w/2:
+								if l.assigned.inSeat:
+									speSeat-=n
+								
+					if (pick.position.x > self.size.w/2):
+						for l in self.seatMap:
+							if l.position.y == pick.position.y and l.position.x < pick.position.x and l.position.x > self.size.w/2:
+								if l.assigned.inSeat:
+									speSeat-=n
+					
+							
+					if (k.gotoPos[0] < self.size.w/2):
+						
+						k.position=(k.position.x-speSeat,k.position.y)
+						if (k.position.x - k.gotoPos[0]) <= 0:
+							k.position = k.gotoPos
+					else:
+						
+						k.position=(k.position.x+speSeat,k.position.y)
+						if (k.position.x - k.gotoPos[0]) >= 0:
+							k.position = k.gotoPos
+				
+			
+				
+					
+
+		
+		if self.line[0] != ' ' and self.line[-1].inSeat:
+			test = True
+			for i in self.line:
+				if not i.position == i.assigned.position:
+					test = False
+			if test:
+				self.end = True
+		if self.end and not self.done:
+			self.studder=stopWatch.time()+4
+			
+			
+			
+			self.timeSegments.append((stopWatch.time()-self.START) * float(counterSpeed.text))
+			
+			
+			
+			self.done = True
+		if self.done:
+			
+			
+			
+			acc = ((stopWatch.time()-(self.studder-4))**2)/1.5
+			
+			try:
+				for item in self.line:
+					
+					item.position = item.position.x,item.position.y-acc
+				for item in self.seatMap:
+					item.position = item.position.x,item.position.y-acc
+			except:
+				placeholder = 1
+			
+		t = (self.studder < stopWatch.time())
+		
+		
+		if t:
+			
+			self.previousLayout = []
+			
+			for seat in self.seatMap:
+					self.previousLayout.append(seat.color)		
+			
+			
+			
+			
+			
+
+			
+			
+			
+			score = str(sum(self.timeSegments))[0:5] + ' seconds'
+			
+			
+			
+			
+			self.reset()
+			
+	def touch_began(self,touch):
+		x=touch.location.x
+		y=touch.location.y
+		for i in self.seatMap:
+			if i.rectangle.contains_point((x,y)) and not self.enter and not self.run:
+				i.color = self.selectedGroup.color
+		self.changingGroups = True
+		for i in groupList:
+			if i.rectangle.contains_point((x,y)):
+				self.selectedGroup = i
+				self.changingGroups = False
+				
+				
+		if not self.changingGroups:
+			for i in groupList:
+				i.alpha = 0.7
+			self.selectedGroup.alpha = 1
+		
+		
+		
+				
+				
+				
+		for i in preMadeList:
+			if i.rectangle.contains_point((x,y)) and not self.run:
+				text = i.name
+				
+				if text == 'Back to Front':
+					for place in self.seatMap:
+						row = int(self.seatMap.index(place)/6)
+						count = int(counterGroups.text)
+						n = len(self.seatMap)/(6*count)
+						
+						t = int(row/n)
+						
+						place.color = colorList[t]
+							
+						
+						
+				if text == 'Random':
+					for place in self.seatMap:
+						
+						place.color = colorList[randint(0,len(colorList)-1)]
+									
+				if text == 'Window to Aisle':			
+					for place in self.seatMap:
+						seat = self.seatMap.index(place)%6
+						if seat == 2 or seat == 5:
+							place.color= BLUE
+						if seat == 1 or seat == 4:
+							place.color= GREEN
+						if seat == 0 or seat == 3:
+							place.color= RED		
+				if text == 'WILMA':			
+					for place in self.seatMap:
+						seat = self.seatMap.index(place)%6
+						row = self.seatMap.index(place)/6 
+						n = len(self.seatMap)/12
+						if row >= n:
+							if seat == 2 or seat == 5:
+								place.color= BLUE
+							if seat == 1 or seat == 4:
+								place.color= AQUA
+							if seat == 0 or seat == 3:
+								place.color= GREEN
+						else:
+							if seat == 2 or seat == 5:
+								place.color= YELLOW
+							if seat == 1 or seat == 4:
+								place.color= RED
+							if seat == 0 or seat == 3:
+								place.color= PINK		
+				if text == 'Steffen Abr.':
+					for place in self.seatMap:
+						row = int(self.seatMap.index(place)/6)
+						seat = self.seatMap.index(place)%6
+						count = int(counterGroups.text)
+						place.color = colorList[( (row%(int((count+1)/2)))*2+int(seat/3) )]
+		
+		for i in buttons:
+			if i.rectangle.contains_point((x,y)):  
+				n = int(counterGroups.text)
+				if i.name == 'add' and n < 6 and not self.run:
+					counterGroups.text = str(n+1)
+				if i.name == 'sub' and n > 1 and not self.run:
+					counterGroups.text = str(n-1)
+					
+				n = speedList.index(float(counterSpeed.text))
+				
+				if self.run:
+					self.timeSegments.append((stopWatch.time()-self.START) * float(counterSpeed.text))
+					self.START = stopWatch.time()
+				if i.name == 'fast' and n < len(speedList)-1:
+					counterSpeed.text = str(speedList[n+1])
+				if i.name == 'slow' and n > 0:
+					counterSpeed.text = str(speedList[n-1])
+					
+				if i.name == 'save' and not self.run:	
+					if self.saving:
+						self.saving = False
+						for j in newMadeList:
+							#normal color
+							j.color = '#adcaff'
+							j.text.color = textBlue
+					else:
+						
+						self.saving = True
+						for j in newMadeList:
+							#selected color
+							j.color = '#a4ffdb'
+							j.text.color = textGreen
+				grey = False
+				for j in self.seatMap:
+					if not (j.color in colorList):
+						grey = True
+				if i.name == 'run' and not self.enter and not self.run and not grey:	
+					
+						
+					self.START = stopWatch.time()
+					self.run = True
+					
+					segregated = [[ ],[ ],[ ],[ ],[ ],[ ]]
+					for person in self.line:
+						person.gotoPos = person.assigned.position
+						person.color = person.assigned.color
+						 
+						segregated[colorList.index(person.color)].append(person)
+						
+					
+					
+					self.line = []
+					for colorGroup in segregated:
+						if 0 < len(colorGroup): 
+							shuffle(colorGroup)
+							self.line += colorGroup
+					
+					for person in self.line:
+						rowSpace = 30
+						person.position=(self.size.w/2,-(self.line.index(person))*rowSpace-400)
+					
+					
+					
+						#j.assigned.position = j.gotoPos[0], j.gotoPos[1]+836
+						
+		for i in newMadeList:
+			if i.rectangle.contains_point((x,y)): 
+				if self.saving and not self.run:
+					n = datetime.datetime.now()
+					time = str(n.hour%12)+' : {min:02.0f} : {sec:02.0f}'.format(min = n.minute,sec = n.second)
+					i.text.text = str(time)
+					for j in newMadeList:
+						j.color = '#adcaff'
+						j.text.color = textBlue
+					i.save = []
+					for j in self.seatMap:
+						i.save.append(j.color)		
+					self.saving = False
+				elif len(i.save) > 0:
+					for j in range(len(self.seatMap)):
+						self.seatMap[j].color = i.save[j]
+	def touch_moved(self,touch):
+	#	if not self.changingGroups:
+		x=touch.location.x
+		y=touch.location.y
+		for i in self.seatMap:
+			
+			if i.rectangle.contains_point((x,y)) and not self.enter and not self.run:
+				
+				i.color = self.selectedGroup.color
+			
+	#def touch_ended(self,touch)	
+
+	def touch_ended(self,touch):
+		self.changingGroups = False
+	def preMade(self, name):
+		
+		split = 50
+		place=SpriteNode('pzl:Button1')
+		if slidingDown:
+			place.position = (50,self.size.h-10-split*len(preMadeList))
+		else:
+			place.position = (50,self.size.h-230+split*len(preMadeList))
+		place.scale = 1.5
+		place.color = '#adcaff'
+		place.alpha = 1
+		place.x_scale = 0.5
+		place.y_scale = 0.8
+		h = 30
+		w = 50
+		place.rectangle = Rect(place.position.x - w,place.position.y - h,2*w,2*h)
+		preMadeList.append(place)
+		self.add_child(place)
+		
+		text = LabelNode(name)
+		text.position = place.position
+		text.scale = 0.7
+		text.color = textBlue
+		text.font = ('DIN Condensed',20)
+		place.text = text
+		place.name = name
+		self.add_child(text)
+	def newMade(self, name):
+		split = 50
+		place=SpriteNode('pzl:Button1')
+		
+		place.position = (50,buttons[-1].position.y-split*len(newMadeList)-60)
+		
+		
+		place.scale = 1.5
+		place.color = '#adcaff'
+		place.alpha = 1
+		place.x_scale = 0.5
+		place.y_scale = 0.8
+		h = 30
+		w = 50
+		place.rectangle = Rect(place.position.x - w,place.position.y - h,2*w,2*h)
+		newMadeList.append(place)
+		self.add_child(place)
+		
+		text = LabelNode(name)
+		text.position = place.position
+		text.scale = 0.7
+		text.color = textBlue
+		text.font = ('DIN Condensed',20)
+		place.text = text
+		place.name = name	
+		place.save = []
+		
+		self.add_child(text)
+		
+								
+	def group(self):
+		split = 50
+		place=SpriteNode('pzl:Gray3')
+		if slidingDown:
+			place.position = (self.size.w-50,self.size.h-60-split*len(groupList))
+		else:
+			place.position = (self.size.w-50,self.size.h-350+split*len(groupList))
+		place.scale = 1.5
+		place.color = colorList[len(groupList)]
+		place.alpha = 0.7
+		w = 30
+		place.rectangle = Rect(place.position.x - w,place.position.y - w,2*w,2*w)
+		groupList.append(place)
+		self.add_child(place)
+		return(place)
+		
+	def button(self, x, y, name, colorTile, colorSymb, symbol):
+		tile = SpriteNode('pzl:Button1',(x,y))
+		symb = SpriteNode(symbol,(x,y))
+		tile.scale = 1
+		tile.x_scale = 0.4
+		tile.color = colorTile
+		w = 30
+		tile.rectangle = Rect(tile.position.x - w,tile.position.y - w,2*w,2*w)
+		
+		self.add_child(tile)
+		buttons.append(tile)
+		tile.name = name
+		
+		symb.scale = 1.4
+		symb.color = colorSymb
+		self.add_child(symb)	
+	def seat(self,seat):
+		
+		
+		place=SpriteNode('pzl:Gray3')
+		place.type = 'seat'
+		place.assigned = 0
+		
+		place.scale = 0.9
+		place.inSeat = False
+		w = 10
+		place.rectangle = Rect(place.position.x - w,place.position.y - w,2*w,2*w)
+		
+		self.add_child(place)
+		#if row % 5 == 0:
+		#	tile.color='red'
+		
+		n=5
+		'''
+		if self.SYSTEM == 'Ste':		
+			print('Ok')
+			place.color = (randint(0,n)/n, randint(0,n)/n, randint(0,n)/n)
+			print(place.color)
+		'''
+		
+		rowSpace = 30
+		seatSpace = 30
+		
+		pos=[1,2,3,-1,-2,-3]
+		x=self.size.w/2+pos[seat%6]*seatSpace
+		place.position=(x,(int(seat/6)+1)*rowSpace-0)
+		place.gotoPos = place.position
+		place.loc = seat 
+	
+		place.position = place.position.x,place.position.y+seat%6+840
+		
+		return(place)
+	def person(self,seat):
+		person=SpriteNode('pzl:BallGray')
+		person.type = 'person'
+		person.z_position = 4
+		person.scale = 1
+		person.inSeat = False
+		person.paused = False
+		person.time = stopWatch.time()+1000
+		self.add_child(person)
+		#if row % 5 == 0:
+		#	tile.color='red'
+		
+		#colorList=[(1.0,0.0,0.0,1.0),(1.0,0.65,0.0,1.0),(1.0,1.0,0.0,1.0),(0.0,0.5,0.0,1.0),(0.0,0.0,1.0,1.0),(0.5,0.0,0.5,1.0),(1.0,0.75,0.8,1.0)]
+		#person.color=choice(colorList)
+		
+		'''
+		if self.SYSTEM != 'R':
+			n = len(self.seatMap)/18
+			if 0 <= row and n > row:
+				person.color='#9ba4ff'
+			if n <= row and 2*n > row:
+				person.color='#9bffa4'
+			if 2*n <= row and 3*n > row:
+				person.color='#ff9b9b'
+		'''
+		
+		
+		self.seatMap[seat].assigned = person
+		person.assigned = self.seatMap[seat]
+		rowSpace = 30
+		
+		person.color = person.assigned.color		
+			
+		person.assigned.assigned = person		
+		person.position = -30,-30	
+		#person.gotoPos = [self.seatMap[seat].position.x,self.seatMap[seat].position.y]
+		
+		
+		
+		
+		
+		#person.position=(self.size.w/2,-(seat)*rowSpace-400)
+		
+		
+		return(person)
+if __name__ == '__main__':
+	run(Game(), PORTRAIT, show_fps=True)
